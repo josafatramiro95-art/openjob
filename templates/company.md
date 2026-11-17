@@ -16,7 +16,3 @@ owners: [YOUR_GITHUB]
 Move this file to `companies/<first-letter>/<slug>.md`. `owners` lists the GitHub logins who can edit this page and its jobs. Include yourself. A new company page is reviewed once. Company pages do not expire. Jobs are separate files.
 
 Do not put a recruiting phone number or a recruiting inbox on this page. A job post can carry the hiring address. Use `website`, `careers`, and an optional `logo` URL. Do not commit the logo file. This folder is rendered into an HTML page from Markdown, so the logo stays at an https URL.
-
-## 说明
-
-公司页放到 `companies/首字母/slug.md`，不会自动过期。不要留招聘电话或邮箱。`logo` 只能是仓库外的 https 图片地址。

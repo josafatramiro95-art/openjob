@@ -69,7 +69,23 @@ TOOLS = (
             "type": "object",
             "properties": {
                 "kind": {"type": "string", "enum": ["job", "talent", "company"]},
-                "fields": {"type": "object"},
+                "fields": {
+                    "type": "object",
+                    "description": "Front-matter fields for the selected post kind plus its Markdown body.",
+                    "properties": {
+                        "body": {
+                            "type": "string",
+                            "description": (
+                                "For a talent post, use ## About, ## Experience, and ## Education sections. "
+                                "Put a concise factual summary first, then use flat Markdown bullets for experience evidence. "
+                                "Use only supplied facts and omit missing details. Omit Education when the candidate "
+                                "has no education information or does not want it shown. Do not include an email, "
+                                "phone number, WeChat ID, WhatsApp handle, or Telegram handle."
+                            ),
+                        }
+                    },
+                    "required": ["body"],
+                },
                 "dry_run": {"type": "boolean"},
             },
             "required": ["kind", "fields"],

@@ -15,7 +15,3 @@ profile_url: https://github.com/YOUR_GITHUB/openjob-profile
 Use this when the full profile lives in your own repository named `openjob-profile`. This file is only the index entry. Put it at `talents/<your-github-name>.md`.
 
 The GitHub login in `profile_url` must match `github`, and `github` must match the pull request author. Keep the canonical profile in that repo as `profile.md` using the talent schema.
-
-## 说明
-
-完整档案放在你自己的 `openjob-profile` 仓库。这里只留一条可搜索的索引，路径同上。
