@@ -63,6 +63,12 @@ const openTo = z.array(z.enum(['full-time', 'part-time', 'contract', 'internship
 const httpsUrl = z.string().url().max(300).refine(value => value.startsWith('https://'), 'Must use HTTPS');
 const publicText = (value) => !/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(value)
   && !/(?:^|\D)\+?\d[\d ()./-]{7,}\d(?:\D|$)/.test(value);
+const publicProfileMarkdown = (value) => !/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(value)
+  && !/(?:^|\D)\+?\d(?:[\s()./-]*\d){8,}(?:\D|$)/.test(value);
+const hasMarkdownSectionContent = (value, name) => {
+  const section = value.match(new RegExp(`^## ${name}\\s*\\n([\\s\\S]*?)(?=\\n## |$)`, 'im'));
+  return Boolean(section?.[1].trim());
+};
 
 const createTalentInput = z.object({
   name: z.string().trim().min(1).max(80).refine(publicText, 'Do not include an email address or phone number.').describe('Public display name; never include email or phone.'),
@@ -72,6 +78,10 @@ const createTalentInput = z.object({
   languages,
   tags: tags.refine(values => values.every(publicText), 'Tags must not include an email address or phone number.').describe('Skill tags; never include email or phone.'),
   open_to: openTo,
+  body_markdown: z.string().trim().min(40).max(8000)
+    .refine(value => hasMarkdownSectionContent(value, 'About') && hasMarkdownSectionContent(value, 'Experience'), 'Include factual content under ## About and ## Experience Markdown sections.')
+    .refine(publicProfileMarkdown, 'Do not include an email address or phone number.')
+    .describe('Public résumé evidence as Markdown. Include ## About and ## Experience sections, and ## Education when supplied and wanted. Put a concise factual summary first, then flat bullets for experience. Omit missing details; never invent facts, email, or phone.'),
   website: httpsUrl.refine(publicText, 'Do not include an email address or phone number.').describe('Optional public HTTPS website; never include email or phone.').optional(),
   linkedin: z.string().max(300).regex(/^https:\/\/(?:[a-z]{2,3}\.)?linkedin\.com\/in\/[A-Za-z0-9%-]+\/?$/).refine(publicText, 'Do not include an email address or phone number.').describe('Optional LinkedIn profile URL; never include email or phone.').optional(),
   consent_to_publish: z.literal(true).describe('Set true only after the person approves the exact fields as a public, downloadable profile under CC BY 4.0 and understands that deletion cannot recall copies already downloaded. Do not include the original resume, an email, or a phone number.'),
@@ -129,7 +139,7 @@ export const operations = [
   {
     name: 'create_talent', operationId: 'create_talent', method: 'post', path: '/api/v1/talent', tags: ['Talent'],
     summary: 'Publish a public talent profile',
-    description: 'Create a public, downloadable talent profile without a GitHub account, API key, or OpenJob installation. Agents should extract these fields from a PDF, Word resume, or LinkedIn profile, ask only for missing required values, show the exact profile, and set consent_to_publish only after approval. Do not upload or store the source document, email, or phone number. The record is licensed under CC BY 4.0 and expires after 180 days. Returns a private delete token once.',
+    description: 'Create a public, downloadable talent profile without a GitHub account, API key, or OpenJob installation. Agents should extract structured fields and Markdown résumé evidence from a PDF, Word resume, or LinkedIn profile. Use body_markdown with ## About and ## Experience sections, plus ## Education when supplied and wanted. Ask only for missing required values, show the exact profile, and set consent_to_publish only after approval. Do not upload or store the source document, invent facts, or include email or phone. The record is licensed under CC BY 4.0 and expires after 180 days. Returns a private delete token once.',
     input: createTalentInput, output: z.object({record: recordSchema, delete_token: z.string()}), annotations: writeAnnotations,
     successStatus: 201,
     run: (env, args) => createTalent(env, args),

@@ -116,6 +116,67 @@ function escapeHtml(value) {
   })[character]);
 }
 
+function renderInlineMarkdown(value) {
+  const formatText = text => escapeHtml(text)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/__([^_]+)__/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/_([^_]+)_/g, '<em>$1</em>');
+  const links = /\[([^\]]+)\]\((https:\/\/[^\s)]+)\)/g;
+  let result = '';
+  let cursor = 0;
+  let match;
+  while ((match = links.exec(value))) {
+    result += formatText(value.slice(cursor, match.index));
+    result += `<a href="${escapeHtml(match[2])}" rel="nofollow noopener">${escapeHtml(match[1])}</a>`;
+    cursor = links.lastIndex;
+  }
+  return result + formatText(value.slice(cursor));
+}
+
+function renderProfileMarkdown(markdown) {
+  const output = [];
+  const paragraph = [];
+  let list = [];
+  const flushParagraph = () => {
+    if (paragraph.length) output.push(`<p>${renderInlineMarkdown(paragraph.join(' '))}</p>`);
+    paragraph.length = 0;
+  };
+  const flushList = () => {
+    if (list.length) output.push(`<ul>${list.map(item => `<li>${renderInlineMarkdown(item)}</li>`).join('')}</ul>`);
+    list = [];
+  };
+  for (const line of String(markdown).split(/\r?\n/)) {
+    const heading = line.match(/^(#{2,3})\s+(.+)$/);
+    const bullet = line.match(/^\s*[-*]\s+(.+)$/);
+    if (heading) {
+      flushParagraph();
+      flushList();
+      const level = heading[1].length;
+      output.push(`<h${level}>${renderInlineMarkdown(heading[2])}</h${level}>`);
+    } else if (bullet) {
+      flushParagraph();
+      list.push(bullet[1]);
+    } else if (!line.trim()) {
+      flushParagraph();
+      flushList();
+    } else {
+      flushList();
+      paragraph.push(line.trim());
+    }
+  }
+  flushParagraph();
+  flushList();
+  return output.join('');
+}
+
+function profileExcerpt(markdown) {
+  const about = String(markdown).match(/^## About\s*\n([\s\S]*?)(?=\n## |$)/im)?.[1] || markdown;
+  return about.replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/^\s*[-*#>]+\s*/gm, '').replace(/[\*_`]/g, '').replace(/\s+/g, ' ').trim().slice(0, 240);
+}
+
 export async function serveProfilePage(request, env) {
   if (request.method !== 'GET' && request.method !== 'HEAD') return new Response('Method not allowed', {status: 405});
   const match = new URL(request.url).pathname.match(/^\/p\/api-talent\/([0-9a-f-]{36})\/?$/i);
@@ -128,11 +189,12 @@ export async function serveProfilePage(request, env) {
     const availability = record.open_to.map(escapeHtml).join(', ');
     const languages = record.languages.map(escapeHtml).join(', ');
     const tags = record.tags.map(tag => `<li>${escapeHtml(tag)}</li>`).join('');
+    const body = renderProfileMarkdown(record.body_markdown || '');
     const contact = [
       record.website && `<a href="${escapeHtml(record.website)}" rel="nofollow noopener">Website</a>`,
       record.linkedin && `<a href="${escapeHtml(record.linkedin)}" rel="nofollow noopener">LinkedIn</a>`,
     ].filter(Boolean).join(' · ');
-    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} — OpenJob</title><meta name="description" content="${headline}"><link rel="canonical" href="${escapeHtml(record.permalink)}"><style>body{font:17px/1.6 system-ui,sans-serif;max-width:720px;margin:48px auto;padding:0 24px;color:#201f1d;background:#f8f6f0}h1{font-size:2rem;line-height:1.15}a{color:#9b2c23}.meta{color:#625d55}ul{display:flex;gap:8px;flex-wrap:wrap;padding:0;list-style:none}li{background:#ece8dc;padding:3px 10px;border-radius:999px}footer{margin-top:48px;border-top:1px solid #d7d0c4;padding-top:16px;color:#625d55;font-size:.9rem}</style></head><body><main><p class="meta"><a href="https://openjob.softprobe.ai">OpenJob</a> / Talent profile</p><h1>${title}</h1><p><strong>${headline}</strong></p><p class="meta">${location} · ${escapeHtml(record.remote)} · Open to ${availability}</p><p class="meta">Languages: ${languages}</p>${tags ? `<h2>Skills</h2><ul>${tags}</ul>` : ''}${contact ? `<h2>Links</h2><p>${contact}</p>` : ''}<footer>Public profile · Expires ${escapeHtml(record.expires)} · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></footer></main></body></html>`;
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} — OpenJob</title><meta name="description" content="${escapeHtml(record.excerpt || headline)}"><link rel="canonical" href="${escapeHtml(record.permalink)}"><style>body{font:17px/1.6 system-ui,sans-serif;max-width:720px;margin:48px auto;padding:0 24px;color:#201f1d;background:#f8f6f0}h1{font-size:2rem;line-height:1.15}a{color:#9b2c23}.meta{color:#625d55}.profile-body{margin-top:32px}.profile-body h2{margin-top:32px}.profile-body ul{padding-left:24px}.profile-body li{margin:6px 0}.profile-body code{background:#ece8dc;padding:2px 5px;border-radius:3px}.skills{display:flex;gap:8px;flex-wrap:wrap;padding:0;list-style:none}.skills li{background:#ece8dc;padding:3px 10px;border-radius:999px}footer{margin-top:48px;border-top:1px solid #d7d0c4;padding-top:16px;color:#625d55;font-size:.9rem}</style></head><body><main><p class="meta"><a href="https://openjob.softprobe.ai">OpenJob</a> / Talent profile</p><h1>${title}</h1><p><strong>${headline}</strong></p><p class="meta">${location} · ${escapeHtml(record.remote)} · Open to ${availability}</p><p class="meta">Languages: ${languages}</p><div class="profile-body">${body}</div>${tags ? `<h2>Skills</h2><ul class="skills">${tags}</ul>` : ''}${contact ? `<h2>Links</h2><p>${contact}</p>` : ''}<footer>Public profile · Expires ${escapeHtml(record.expires)} · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></footer></main></body></html>`;
     const headers = {
       'content-type': 'text/html; charset=utf-8',
       'cache-control': 'no-store',
@@ -191,7 +253,8 @@ function isoDateAfter(date, days) {
 function profileRecord(input, id, posted, expires) {
   const path = `api-talent/${id}`;
   const permalink = `${apiOrigin}/p/${path}/`;
-  const excerpt = `${input.headline}. Open to ${input.open_to.join(', ')}.`;
+  const about = profileExcerpt(input.body_markdown);
+  const excerpt = about ? `${about} Open to ${input.open_to.join(', ')}.` : `${input.headline}. Open to ${input.open_to.join(', ')}.`;
   return {
     kind: 'talent', path, owner: null, title: input.name, headline: input.headline, org: '', role: input.headline,
     location: input.location, remote: input.remote, languages: input.languages, tags: input.tags,
@@ -199,7 +262,7 @@ function profileRecord(input, id, posted, expires) {
     profile_url: null, website: input.website || null, linkedin: input.linkedin || null, apply: null,
     apply_email: null, logo: null, careers: null, open_to: input.open_to, compensation: '', employment_type: null,
     salary: null, locations: null, excerpt, org_website: null, company_permalink: null, permalink,
-    origin: 'api',
+    origin: 'api', body_markdown: input.body_markdown,
   };
 }
 
@@ -313,7 +376,7 @@ async function* records(env, shard) {
 
 function match(record, options) {
   const q = (options.text || '').toLowerCase();
-  const haystack = ['title', 'headline', 'org', 'location', 'department', 'tags', 'excerpt']
+  const haystack = ['title', 'headline', 'org', 'location', 'department', 'tags', 'excerpt', 'body_markdown']
     .flatMap(key => record[key] || []).join(' ').toLowerCase();
   if (q && !haystack.includes(q)) return false;
   for (const key of fields) {

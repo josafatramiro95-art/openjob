@@ -479,6 +479,11 @@ def render_body(body: str) -> str:
             level = min(max(len(heading.group(1)), 2), 3)
             blocks.append(f"<h{level}>{html.escape(heading.group(2).strip())}</h{level}>")
             continue
+        bullets = [re.fullmatch(r"[-*+]\s+(.+)", line) for line in lines]
+        if bullets and all(bullets):
+            items = "".join(f"<li>{_inline(item.group(1))}</li>" for item in bullets if item is not None)
+            blocks.append(f"<ul>{items}</ul>")
+            continue
         rendered = "<br>\n".join(_inline(line) for line in lines)
         blocks.append(f"<p>{rendered}</p>")
     return "\n".join(blocks)

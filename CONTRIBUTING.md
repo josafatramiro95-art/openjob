@@ -132,6 +132,8 @@ Save `templates/talent.md` as `talents/<your-github-name>.md`. Example: `talents
 
 `open_to` is one or more of `full-time`, `part-time`, `contract`, `internship`.
 
+Keep discovery fields in the front matter. Put résumé evidence in body sections named `## About`, `## Experience`, and `## Education`. Start with a concise factual summary. Under each experience heading, use flat bullet lists for responsibilities and supported outcomes. Use only facts supplied by the candidate and omit missing details. Omit Education when no education information is supplied or the candidate does not want it shown. Do not include an email, phone number, WeChat ID, WhatsApp handle, or Telegram handle.
+
 ## Post a company
 
 Save `templates/company.md` as `companies/<first-letter>/<slug>.md`. Set `owners` to the GitHub logins who can edit the page. Include yourself. A new company page is reviewed once and does not auto-merge. After that, only those owners can edit the page and the company's jobs. Company pages do not expire. A job is a separate file.
@@ -227,7 +229,7 @@ The auto-merge comment repeats these links. It does not repeat the apply link.
 
 1. 不要写电话。人才帖不能写邮箱。职位的 `apply` 必填：`https://` 指向 ATS、招聘页或职位链接，或公司域名上的一个 `mailto:`。两者都要时，`apply` 保持 https，`apply_email` 写 `mailto:`。不能两个都写成 `mailto:`。域名必须和公司网站一致（公司页存在时以公司页的 `website` 为准，忽略 `www.`）。正文里的邮箱会被拒绝。个人邮箱和其他域名会被拒绝。细节见上文 [Application methods](#application-methods)。`名字 [at] 域名 [dot] com`、全角 `＠`、以及 `一三八……` 这种中文数字同样会被拒绝。
 2. 职位文件放在 `jobs/年/月/公司-职位.md`，`posted_by` 必须是你的 GitHub 用户名。默认 60 天后过期。
-3. 人才档案放在 `talents/你的github用户名.md`，`github` 必须是你自己。默认 180 天。也可以在自己的 `openjob-profile` 仓库放全文，这里只提交 `kind: talent-ref` 的索引。
+3. 人才档案放在 `talents/你的github用户名.md`，`github` 必须是你自己。YAML front matter 保留检索字段。正文用 `## About`、`## Experience` 和 `## Education` 分节。先写简洁、真实的简介，再用不嵌套的项目符号列出工作经历。只写候选人提供且有依据的事实，缺少的日期、结果或学历信息不要猜测。没有学历信息或候选人不想公开时可省略 Education。不要写邮箱、电话、微信号、WhatsApp 用户名或 Telegram 用户名。默认 180 天。也可以在自己的 `openjob-profile` 仓库放全文，这里只提交 `kind: talent-ref` 的索引。
 4. 公司页放在 `companies/首字母/slug.md`，不过期。
 5. 一个 Pull Request 只新增一篇帖子。文件必须在 `jobs/`、`talents/` 或 `companies/` 里，并且必须是符合模板的 Markdown。这些目录会被渲染成 HTML 页面，所以 PDF、图片或其他文件会被拒绝。检查通过后会 squash 合并。更新已有帖子时编辑原文件。`docs/` 里的图片不会因此被拒绝，但改工作流或文档需要 Softprobe 团队批准。
 6. 续期时不要改 `posted`，把 `renewed` 设成提交当天。过期文件会从目录删除，Git 历史就是归档，需要时从历史恢复再续期。

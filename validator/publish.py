@@ -681,7 +681,7 @@ def _llms(grouped: dict[str, list[dict]]) -> str:
         "",
         "The remote OpenJob MCP server exposes `get_dataset`, `list_jobs`, `get_job`, `list_talent`, `get_talent`, `create_talent`, and `delete_talent`. "
         "Public reads and talent profile publishing need no account, API key, or OpenJob installation. "
-        "To publish a profile, convert a supplied PDF, Word resume, LinkedIn profile, or bio into the OpenAPI `create_talent` schema. "
+        "To publish a profile, convert a supplied PDF, Word resume, LinkedIn profile, or bio into the OpenAPI `create_talent` schema, including `body_markdown` with `## About` and `## Experience` sections and optional `## Education`. "
         "Do not upload or store the source document or invent facts. Ask only for missing required fields, show the exact fields, explain the public CC BY 4.0 license, expiry, and deletion limit, and get explicit approval before calling the tool or POSTing to `/api/v1/talent`. "
         "Tell the person the permalink and show the private deletion token once. GitHub is optional for profiles; the existing PR workflow remains available.",
         "",
@@ -700,7 +700,7 @@ def _llms(grouped: dict[str, list[dict]]) -> str:
         f"[{origin}/talents.xml]({origin}/talents.xml), and [{origin}/talents.atom]({origin}/talents.atom).",
         "- Rank live jobs against a resume or bio. Return each match with its permalink and the "
         "apply method already on that post. Do not invent an email or a phone number.",
-        "- To publish a resume as a talent profile, extract fields from the PDF, Word document, LinkedIn profile, or bio into the `create_talent` request schema in OpenAPI. Do not upload the source document. Ask for missing required fields, show the exact profile, explain its public CC BY 4.0 license, expiry, and that deletion cannot recall downloaded copies, then get approval before publishing. Use remote MCP `create_talent` or POST the same JSON to `https://openjob.softprobe.ai/api/v1/talent`; no account or API key is needed. Show the returned deletion token once and tell the person to save it. Profiles expire after 180 days.",
+        "- To publish a resume as a talent profile, extract fields from the PDF, Word document, LinkedIn profile, or bio into the `create_talent` request schema in OpenAPI. Put factual evidence in `body_markdown` under `## About` and `## Experience` headings, with `## Education` when supplied and wanted. Start with a concise factual summary and use flat bullets. Omit missing details. Do not upload the source document or invent facts. Ask for missing required fields, show the exact Markdown profile, explain its public CC BY 4.0 license, expiry, and that deletion cannot recall downloaded copies, then get approval before publishing. Use remote MCP `create_talent` or POST the same JSON to `https://openjob.softprobe.ai/api/v1/talent`; no account or API key is needed. Show the returned deletion token once and tell the person to save it. Profiles expire after 180 days.",
         f"- A GitHub profile is the alternative `talents/<github-login>.md` workflow. Follow [{origin}/schema/talent.json]({origin}/schema/talent.json). No email and no phone. [New talent file]({repo}/new/main/talents).",
         "- Apply with the job's https link or the hiring address on the post. A link to this "
         "repository's README or profile guide is not an application. Adding a profile is optional "
@@ -756,7 +756,7 @@ How do I apply?
 The job page shows the application method: an email on the company domain, an https link, or both. A link to this board's profile guide is not an application.
 
 How do I add a profile?
-You can publish a profile with the anonymous HTTP API or remote MCP; no account is needed. Convert a PDF, Word resume, LinkedIn profile, or bio into the OpenAPI create_talent fields. Do not upload the source file. Show the exact public fields, explain the CC BY 4.0 license, 180-day expiry, and that deletion cannot recall copies already downloaded, then get explicit approval before publishing. The private delete token is returned once. No email or phone. The existing GitHub pull request workflow is still available.
+You can publish a profile with the anonymous HTTP API or remote MCP; no account is needed. Convert a PDF, Word resume, LinkedIn profile, or bio into the OpenAPI create_talent fields, including Markdown body_markdown sections for About and Experience, and Education when supplied and wanted. Do not upload the source file or invent facts. Show the exact public profile, explain the CC BY 4.0 license, 180-day expiry, and that deletion cannot recall copies already downloaded, then get explicit approval before publishing. The private delete token is returned once. No email or phone. The existing GitHub pull request workflow is still available.
 
 Who can edit a post?
 Your profile is talents/<your-github-name>.md. A company page lists owners. Those owners edit the company and its jobs. A job with no company page stays with the posted_by login. A new company page is reviewed once.
