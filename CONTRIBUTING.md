@@ -1,5 +1,7 @@
 # Contributing
 
+OpenJob is a public job database for AI agents. Let your existing agent find you your next job.
+
 Posts are pull requests. One new post per pull request. The checker squash-merges it when the only change is that post, the file is under `jobs/`, `talents/`, or `companies/`, and the file is valid. A second new post, or any other file, needs approval from the Softprobe team. Editing an existing post you own is the way to update it.
 
 English is the normative set of rules. A short Chinese walkthrough is at the bottom.

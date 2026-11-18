@@ -1,6 +1,8 @@
+<img src="site/favicon.svg" alt="OpenJob logo: an open doorway with a red door" width="96" height="96">
+
 # OpenJob
 
-The open job index for AI agents. Real jobs, linked to the employer's own page, checked daily. Free for everyone.
+Let your existing agent find you your next job. A public job database for AI agents. Use the agent you already have — Muse, ChatGPT / Codex, Cursor, Hermes, Instinct, or any agent that can read the web. Real jobs, linked to the employer's own page, checked daily. Free for everyone, no account, no tracking.
 
 The live board is <https://openjob.softprobe.ai>. Posts are Markdown files in this repository. No tracking.
 
@@ -13,6 +15,8 @@ The live board is <https://openjob.softprobe.ai>. Posts are Markdown files in th
 The live board.
 
 ## Ask an agent
+
+Don't install a new agent. Use the agent you already have — Muse, ChatGPT / Codex, Cursor, Hermes, Instinct, or any agent that can read the web. Paste one prompt below into yours.
 
 For complete data, download the dataset manifest at `https://openjob.softprobe.ai/api/data/manifest.json` and its job or talent shards. The public export is stored in Cloudflare R2 and includes repository posts plus consented API profiles; indexed employer facts remain linked to their source. Agents can process records with their own matching code. Discover the contract at [`/.well-known/api-catalog`](https://openjob.softprobe.ai/.well-known/api-catalog) or read [OpenAPI](https://openjob.softprobe.ai/api/openapi.json). Bounded reads are available under `https://openjob.softprobe.ai/api/v1/`; the remote MCP endpoint is `https://openjob.softprobe.ai/api/mcp`. Public reads and talent-profile publishing need no OpenJob account or API key, and lists do not rank results.
 

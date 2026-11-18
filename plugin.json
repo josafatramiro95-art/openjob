@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "openjob",
   "version": "1.0.0",
-  "description": "Find public jobs and talent using OpenJob datasets and your own matching method.",
+  "description": "Let your existing agent find you your next job. Find public jobs and talent using OpenJob datasets and your own matching method.",
   "author": {"name": "Softprobe", "url": "https://www.softprobe.ai"},
   "homepage": "https://openjob.softprobe.ai",
   "repository": "https://github.com/softprobe/openjob",

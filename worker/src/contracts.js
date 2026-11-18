@@ -261,7 +261,7 @@ export const openApiDocument = new OpenApiGeneratorV31(registry.definitions).gen
   info: {
     title: 'OpenJob public data API',
     version: '1.0.0',
-    description: 'Public job and talent data plus anonymous talent-profile submission. OpenJob returns facts and source links; clients choose their own matching method.',
+    description: 'A public job database for AI agents. Let your existing agent find you your next job. Public job and talent data plus anonymous talent-profile submission. OpenJob returns facts and source links; clients choose their own matching method.',
   },
   servers: [{url: 'https://openjob.softprobe.ai'}],
   externalDocs: {description: 'OpenJob agent guide and API discovery', url: 'https://openjob.softprobe.ai/llms.txt'},
