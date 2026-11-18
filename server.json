@@ -4,6 +4,6 @@
   "title": "OpenJob",
   "description": "Let your existing agent find you your next job. A public job database for AI agents.",
   "repository": {"url": "https://github.com/softprobe/openjob", "source": "github"},
-  "version": "1.0.0",
+  "version": "0.1.0",
   "remotes": [{"type": "streamable-http", "url": "https://openjob.softprobe.ai/api/mcp"}]
 }
