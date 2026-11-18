@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+  <title>We hire through our own open board — OpenJob</title>
+  <meta name="description" content="Softprobe hired through its own open board. How one Markdown file, the remote MCP server, and the public dataset put a real role in front of every agent.">
+  <link rel="canonical" href="https://softprobe.github.io/openjob/case-studies/softprobe/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="OpenJob">
+  <meta property="og:title" content="We hire through our own open board — OpenJob">
+  <meta property="og:description" content="Softprobe hired through its own open board. How one Markdown file, the remote MCP server, and the public dataset put a real role in front of every agent.">
+  <meta property="og:url" content="https://softprobe.github.io/openjob/case-studies/softprobe/">
+  <!-- openjob:social -->
+  <meta property="og:image" content="https://softprobe.github.io/openjob/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="OpenJob. Open, privacy-first job board on GitHub">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://softprobe.github.io/openjob/og.png">
+  <meta name="twitter:image:alt" content="OpenJob. Open, privacy-first job board on GitHub">
+  <meta name="google-site-verification" content="a2xq4xTZGnwkNdS2FSOJ9EGiUwnSmcRUcCAa2CUkiPI">
+  <!-- /openjob:social -->
+  <meta name="twitter:title" content="We hire through our own open board — OpenJob">
+  <meta name="twitter:description" content="Softprobe hired through its own open board. How one Markdown file, the remote MCP server, and the public dataset put a real role in front of every agent.">
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body class="entry">
+  <div class="wrap">
+    <header class="mast">
+      <div>
+        <div class="brand-row"><img class="brand-mark" src="../../favicon.svg" alt="OpenJob logo" width="40" height="40"><p class="kicker">OpenJob</p></div>
+        <h1 data-i18n="caseTitle">We hire through our own open board</h1>
+        <p class="sub">Softprobe · November 2026</p>
+      </div>
+      <div class="mast-side">
+        <button type="button" class="text-button" data-lang-toggle aria-pressed="false">中文</button>
+        <a href="https://softprobe.github.io/openjob/" data-i18n="board">Board</a>
+      </div>
+    </header>
+    <article>
+      <p>Softprobe is hiring a Software Engineer for AI Agent QA &amp; Observability. The job is posted exactly one place first: OpenJob, our own open board. The post is a Markdown file in a public GitHub repository. It took one pull request to publish, and the moment it merged, every agent that reads OpenJob could find it.</p>
+      <p>This is the post: <a href="https://openjob.softprobe.ai/p/jobs/2026/11/softprobe-software-engineer/">Software Engineer — AI Agent QA &amp; Observability</a> — it links to our Wellfound listing, and to <a href="mailto:hr@softprobe.ai">hr@softprobe.ai</a>. There is no application form on OpenJob itself. There never will be. Applying happens on the employer's own page, and for this role the employer is us.</p>
+      <h2 data-i18n="caseWhy">Why we posted it as a file</h2>
+      <p>A conventional board would have asked us to fill in a form, pick a pricing tier, and wait for candidates to come to the listing. OpenJob inverts that. The listing is a text file with structured fields — title, company, location, apply link, apply email — and the board is a Git repository. The file is the listing. Anyone can read it, link it, fork it, or check its history.</p>
+      <p>That matters because the people we want to hire already have agents. They do not browse job boards; they ask the agent they already use — Muse, ChatGPT/Codex, Cursor, Hermes, Instinct — to find them a job. So the question is not how to get a candidate to visit our board. It is how to get our role into the database their agent already reads. A public, agent-readable file does that. A form behind a login does not.</p>
+      <h2 data-i18n="caseHow">How an agent finds this role</h2>
+      <p>There are three ways in, and they all work today:</p>
+      <ol>
+        <li><strong>Paste a prompt.</strong> “Read <code>https://openjob.softprobe.ai/llms.txt</code> and follow it. Find me a job.” The agent reads the contract and searches the board.</li>
+        <li><strong>Call the MCP server.</strong> <code>https://openjob.softprobe.ai/api/mcp</code> — <code>list_jobs</code>, <code>get_job</code>, and the rest, no API key, no account.</li>
+        <li><strong>Download the dataset.</strong> The complete manifest at <code>https://openjob.softprobe.ai/api/data/manifest.json</code> lists every shard with SHA-256 checksums. The agent downloads all of them, verifies both checksums, and ranks locally.</li>
+      </ol>
+      <p>That third path is the one we use ourselves, and it is worth describing exactly, because it is the reproducible part. The method is: download every shard; verify the gzip checksum and the raw checksum for each; filter to posts from the last 60 days; rank locally with your own code; then verify every apply link live before showing a match to anyone. Never invent a contact — the post's own apply method is the only one that exists. That is the whole method. There is no ranking service and no matching API, by design: OpenJob returns facts and source links, and the agent does its own matching.</p>
+      <h2 data-i18n="caseAfter">What happens after a match</h2>
+      <p>A match is a permalink and an apply method. The candidate follows the link to our Wellfound listing or emails <a href="mailto:hr@softprobe.ai">hr@softprobe.ai</a>. From there it is an ordinary hiring process: intro call, technical conversation, decision. OpenJob's part ends at the introduction — it is not an ATS, not an inbox, and not a messaging product, and we do not want it to become one.</p>
+      <h2 data-i18n="caseProves">What this proves, and what it doesn't</h2>
+      <p>It proves the model works end to end for one real role: file in, agent-readable out, candidate in touch through the employer's own channel. It does not prove scale — one company page and one native job is the honest baseline, and this plan's target is 30 native posters. It also does not prove the role will be filled this way. If it is, we will say so with the real numbers. If it isn't, we will say that too.</p>
+      <p>The point of hiring through our own board is not to claim it is better. It is to eat the failure modes first: if a post is hard to write, if the validation rejects a reasonable file, if an agent cannot find a role that is plainly there, we hit it before any other employer does. That is the only honest way to ask other employers to post.</p>
+      <h2 data-i18n="caseTry">Try it with our role</h2>
+      <p>Paste this into the agent you already use:</p>
+      <div class="prompt"><pre>Read https://openjob.softprobe.ai/llms.txt and follow it. Find me a job in AI agent QA or observability.</pre></div>
+      <p>If it brings you our role, the system works. If it doesn't, open an issue at <a href="https://github.com/softprobe/openjob/issues">https://github.com/softprobe/openjob/issues</a> — that is also part of the point.</p>
+    </article>
+    <footer>
+      <p><a href="https://softprobe.github.io/openjob/">OpenJob</a> · <a href="https://github.com/softprobe/openjob" data-i18n="source">Source</a></p>
+    </footer>
+  </div>
+  <script src="../../i18n.js"></script>
+</body>
+</html>
