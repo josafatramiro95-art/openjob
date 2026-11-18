@@ -725,6 +725,9 @@ function bind() {
       visibleLimit = PAGE_SIZE;
       writeQuery();
       render();
+      if (state.kind === "talent" || state.kind === "all") {
+        refreshApiTalents();
+      }
     });
   });
   const sync = () => {
@@ -753,6 +756,60 @@ function bind() {
     }
   });
   window.addEventListener("hashchange", () => paint({ scroll: true }));
+  window.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && (state.kind === "talent" || state.kind === "all")) {
+      refreshApiTalents();
+    }
+  });
+}
+
+async function fetchApiTalents() {
+  try {
+    let cursor = null;
+    const items = [];
+    do {
+      const url = cursor
+        ? `/api/v1/talent?limit=100&cursor=${encodeURIComponent(cursor)}`
+        : "/api/v1/talent?limit=100";
+      const response = await fetch(url);
+      if (!response.ok) break;
+      const data = await response.json();
+      if (Array.isArray(data.items)) {
+        items.push(...data.items);
+      }
+      cursor = data.next_cursor;
+    } while (cursor && items.length < 500);
+    return items;
+  } catch {
+    return [];
+  }
+}
+
+function mergeTalentPosts(items) {
+  if (!items || !items.length) return false;
+  let changed = false;
+  const pathMap = new Map(posts.map((p, idx) => [p.path, idx]));
+  for (const item of items) {
+    if (pathMap.has(item.path)) {
+      const idx = pathMap.get(item.path);
+      if (JSON.stringify(posts[idx]) !== JSON.stringify(item)) {
+        posts[idx] = item;
+        changed = true;
+      }
+    } else {
+      posts.push(item);
+      pathMap.set(item.path, posts.length - 1);
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+async function refreshApiTalents() {
+  const talents = await fetchApiTalents();
+  if (mergeTalentPosts(talents)) {
+    render();
+  }
 }
 
 async function main() {
@@ -761,10 +818,15 @@ async function main() {
   bindAgent();
   bindAudience();
   try {
-    const response = await fetch("./index.json");
-    if (!response.ok) throw new Error(String(response.status));
-    const documentIndex = await response.json();
-    posts = documentIndex.posts || [];
+    const [indexRes, apiTalents] = await Promise.all([
+      fetch("./index.json").then((response) => {
+        if (!response.ok) throw new Error(String(response.status));
+        return response.json();
+      }),
+      fetchApiTalents(),
+    ]);
+    posts = (indexRes && indexRes.posts) || [];
+    mergeTalentPosts(apiTalents);
   } catch (error) {
     loadError = true;
   }

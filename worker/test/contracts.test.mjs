@@ -92,7 +92,7 @@ test('one registry drives OpenAPI, HTTP, and all seven remote MCP tools', async 
   assert.equal(createSchema.type, 'object');
   assert.equal(createSchema.additionalProperties, false);
   assert.deepEqual(Object.keys(createSchema.properties).sort(), Object.keys(operations.find(item => item.name === 'create_talent').input.shape).sort());
-  assert.deepEqual(createSchema.required, ['name','headline','location','remote','languages','tags','open_to','consent_to_publish']);
+  assert.deepEqual(createSchema.required, ['name','headline','location','remote','languages','tags','open_to','body_markdown','consent_to_publish']);
   assert.equal('github' in createSchema.properties, false);
   assert.equal('email' in createSchema.properties, false);
   assert.equal(openApiDocument.paths['/api/v1/talent'].post.responses['201'].content['application/json'].schema.type, 'object');
@@ -210,6 +210,7 @@ test('anonymous talent writes share one HTTP and remote MCP contract and appear 
     languages: ['en'],
     tags: ['backend', 'distributed-systems'],
     open_to: ['full-time'],
+    body_markdown: '## About\n\nMorgan is a backend engineer.\n\n## Experience\n\n- Built distributed systems.',
     website: 'https://morgan.example',
     consent_to_publish: true,
   };
@@ -239,7 +240,8 @@ test('anonymous talent writes share one HTTP and remote MCP contract and appear 
   const listed = await (await http(env, '/api/v1/talent?text=distributed-systems')).json();
   assert.equal(listed.items.length, 1);
   assert.equal(listed.items[0].path, createdBody.record.path);
-  assert.deepEqual(listed.items[0], createdBody.record);
+  const {body_markdown: _unused, ...summary} = createdBody.record;
+  assert.deepEqual(listed.items[0], summary);
   const detail = await (await http(env, `/api/v1/profile?id=${encodeURIComponent(createdBody.record.permalink)}`)).json();
   assert.equal(detail.record.path, createdBody.record.path);
   const liveManifest = await (await http(env, '/api/data/manifest.json')).json();
@@ -327,7 +329,9 @@ test('expired API profiles leave public manifests and are removed by the daily W
   const {env, metadata, objects} = setup();
   const profile = {
     name: 'Jordan Kim', headline: 'Marketing strategist for early-stage teams', location: 'Seoul',
-    remote: 'hybrid', languages: ['en'], tags: ['marketing'], open_to: ['contract'], consent_to_publish: true,
+    remote: 'hybrid', languages: ['en'], tags: ['marketing'], open_to: ['contract'],
+    body_markdown: '## About\n\nJordan is a marketing strategist.\n\n## Experience\n\n- Grew early-stage product teams.',
+    consent_to_publish: true,
   };
   const response = await http(env, '/api/v1/talent', 'POST', {
     headers: {'content-type': 'application/json'}, body: JSON.stringify(profile),
