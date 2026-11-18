@@ -27,7 +27,7 @@ _SLUG = re.compile(r"[a-z0-9](?:[a-z0-9._-]{0,98}[a-z0-9])?")
 GENERIC = "OpenJob"
 HN_TITLE_LIMIT = 80
 TEMPLATE_ORIGIN = "https://softprobe.github.io/openjob"
-OG_ALT = "OpenJob. Open, privacy-first job board on GitHub"
+OG_ALT = "OpenJob. Let your existing agent find you your next job."
 GOOGLE_SITE_VERIFICATION = "a2xq4xTZGnwkNdS2FSOJ9EGiUwnSmcRUcCAa2CUkiPI"
 GOOGLE_VERIFICATION_FILE = "googlea714d55b74530204.html"
 GOOGLE_VERIFICATION_BODY = "google-site-verification: googlea714d55b74530204.html\n"
@@ -90,13 +90,6 @@ _OPEN_TO = {
 }
 _PROFILE_FRAGMENTS = {"add-your-profile", "post-your-resume-talent"}
 _GITHUB_LOGIN = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$")
-_FAVICON = (
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E"
-    "%3Crect width='32' height='32' fill='%23f3efe4'/%3E%3Crect x='4' y='4' width='24' "
-    "height='24' fill='none' stroke='%23b42318' stroke-width='2'/%3E%3C/svg%3E"
-)
-
-
 def pages_origin(repository: str | None = None) -> str:
     """Project Pages origin for the repository that is publishing the board.
 
@@ -364,7 +357,6 @@ def render_post_page(post: Mapping[str, object], body: str) -> str:
   {social}
   <meta name="twitter:title" content="{e(text, quote=True)}">
   <meta name="twitter:description" content="{e(description, quote=True)}">
-  <link rel="icon" href="{_FAVICON}">
   <link rel="stylesheet" href="{prefix}style.css">
 </head>
 <body class="entry">

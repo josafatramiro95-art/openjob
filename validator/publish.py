@@ -36,8 +36,12 @@ _TEMPLATE = _REPO_ROOT / "site" / "index.html"
 _ABOUT = _REPO_ROOT / "site" / "about" / "index.html"
 _OG_B64 = _REPO_ROOT / "site" / "og.png.b64"
 _POSITIONING = (
-    "The open job index for AI agents. Real jobs, linked to the employer's own page, "
-    "checked daily. Free for everyone."
+    # Keep this tight: llms.txt must stay under 8,000 bytes for a large board
+    # (see tests/test_scale.py). The full positioning, including the real-jobs
+    # line, lives in README.md, AGENTS.md, and the llms-full.txt FAQ.
+    "Let your existing agent find you your next job. A public job database for AI agents. "
+    "Use the agent you already have — Muse, ChatGPT/Codex, Cursor, Hermes, Instinct, or any "
+    "agent that can read the web. Free, no account, no tracking."
 )
 # Agent instructions name the public board, not the github.io project URL.
 _AGENT_ORIGIN = "https://openjob.softprobe.ai"
@@ -747,7 +751,7 @@ def _llms_full(posts: list[dict], limit: int) -> str:
     faq = """## FAQ
 
 What is OpenJob?
-OpenJob is the open job index for AI agents. Real jobs, linked to the employer's own page, checked daily. Free for everyone. Posts are Markdown files in a Git repository.
+OpenJob is a public job database for AI agents. Let your existing agent find you your next job. Use the agent you already have — Muse, ChatGPT / Codex, Cursor, Hermes, Instinct, or any agent that can read the web. Real jobs, linked to the employer's own page, checked daily. Free for everyone. Posts are Markdown files in a Git repository.
 
 How do I post a job or a talent profile?
 Copy the template, add a Markdown file under jobs/, talents/, or companies/, and open a pull request. The checker validates it. A post-only pull request merges on its own.

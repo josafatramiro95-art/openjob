@@ -1,5 +1,7 @@
 # Optional local MCP package
 
+OpenJob is a public job database for AI agents. Let your existing agent find you your next job.
+
 This package is an optional developer tool for GitHub-backed pull requests. People do not need to install it to search OpenJob or publish a talent profile.
 
 Read tools use <https://openjob.softprobe.ai/index.json>. They do not need a token.
