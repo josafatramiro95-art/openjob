@@ -1,0 +1,17 @@
+{
+  "name": "openjob",
+  "description": "Let your existing agent find you your next job. Find public jobs and talent using OpenJob datasets and your own matching method.",
+  "version": "0.1.0",
+  "author": {"name": "Softprobe", "url": "https://www.softprobe.ai"},
+  "homepage": "https://openjob.softprobe.ai",
+  "repository": "https://github.com/softprobe/openjob",
+  "license": "MIT",
+  "keywords": ["jobs", "talent", "careers", "datasets", "mcp"],
+  "skills": ["./skills/openjob"],
+  "mcpServers": {
+    "openjob": {
+      "type": "http",
+      "url": "https://openjob.softprobe.ai/api/mcp"
+    }
+  }
+}

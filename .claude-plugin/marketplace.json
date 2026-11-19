@@ -1,0 +1,14 @@
+{
+  "name": "softprobe",
+  "description": "Plugins from Softprobe — OpenJob, a public job database for AI agents.",
+  "version": "0.1.0",
+  "owner": {"name": "Softprobe", "url": "https://www.softprobe.ai"},
+  "plugins": [
+    {
+      "name": "openjob",
+      "source": "./",
+      "description": "Let your existing agent find you your next job. A public job database for AI agents.",
+      "version": "0.1.0"
+    }
+  ]
+}
